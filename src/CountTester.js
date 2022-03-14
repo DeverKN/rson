@@ -1,11 +1,19 @@
+import {getRefs} from "./useRSON"
+import React from "react"
+
 const CountTester = (props) => {
-    const {counterStateObject} = props
+    let {counterStateObject} = props
     let {counter} = counterStateObject
+    let {increment, decrement, count} = counter
+    /*console.log({increment, decrement})
+    console.log({count})
+    console.log({$:count.$})
+    console.log({counter_count: counter.count.$})*/
     return <>
-        <button onClick={() => counter.decrement()}>-</button>
-        {counter.count}
-        <button onClick={() => counter.increment()}>+</button>
+        <button onClick={() => decrement()}>-</button>
+        {count.$}
+        <button onClick={() => increment()}>+</button>
     </>
 }
 
-export { CountTester }
+export default CountTester

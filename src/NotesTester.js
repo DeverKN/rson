@@ -1,19 +1,21 @@
+import React from "react"
 const NotesTester = (props) => {
     let {notesStateObject} = props
     let {notes} = notesStateObject
+    console.log('Render Notes')
     console.log({notes})
     return <>
         <button onClick={() => {
-            console.log("start click")
-            notesStateObject.notes.push(1)
-            console.log("end click")
+            //console.log("start click")
+            notes.push(1)
+            //console.log("end click")
         }}>Add Note</button>
-        Num Notes: {notes.length}
+        Num Notes: {notes.length.$}
         <button onClick={() => {
-            notesStateObject.notes.pop()
+            notes.pop()
         }}>Remove Note</button>
         <button onClick={() => notesStateObject.notes = []}>Clear Notes</button>
     </>
 }
 
-export { NotesTester }
+export default NotesTester

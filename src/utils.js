@@ -9,6 +9,10 @@ const isObject = (val, includeArray = false) => {
     return (val !== null) && (typeof(val) === 'object') && (includeArray || !Array.isArray(val))
 }
 
+const isFunction = (val) => {
+    return (typeof val === 'function')
+}
+
 /**
  * Updates a value in an immutable object. Doesn't mutate the object but instead returns
  * a new object with the specified value changed
@@ -53,7 +57,7 @@ const isObject = (val, includeArray = false) => {
  * @returns {{value: *}} The requested value
  */
 const getNestedValue = (nestedObj, pathArr, optionalChaining = true) => {
-    console.log(pathArr)
+    //console.log(pathArr)
     if (pathArr.length === 0) return nestedObj
     return pathArr.reduce((obj, key) => {
         if (optionalChaining) {
@@ -64,4 +68,4 @@ const getNestedValue = (nestedObj, pathArr, optionalChaining = true) => {
     }, nestedObj)
 }
 
-export { isObject, updateImmutableObject, getNestedValue }
+export { isObject, updateImmutableObject, getNestedValue, isFunction }

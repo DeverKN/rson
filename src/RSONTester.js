@@ -1,6 +1,6 @@
-import { useRSON } from "./rsonsrc/useRSON";
-import { CountTester } from "./CountTester";
-import { NotesTester } from "./NotesTester";
+import { useRSON } from "./useRSON";
+import CountTester from "./CountTester";
+import NotesTester from "./NotesTester";
 
 const RSONTester = () => {
 
@@ -9,34 +9,22 @@ const RSONTester = () => {
                                 count: 0,
                                 increment: function() {
                                     console.log(this)
-                                    this.count++
+                                    this.count.$++
                                 },
                                 decrement: function() {
                                     console.log(this)
-                                    this.count--
+                                    this.count.$--
                                 },
                             }}, 
                             test:0})
 
-    /*console.log({stuff: stateObject.test})
-
-    let test = stateObject.notesData
-    console.log({test: test})
-    let test2 = test.notesData
-    console.log({test2: test2})
-    console.log({test4: stateObject.counterData.count.count})
-    console.log({test5: getNestedValue(stateObject, ['notesData', 'notesData'])})
-    const {counterData} = newStateObject
-    console.log({test7: newStateObject})
-    console.log({test6: counterData})
-    let test3 = test2.notes
-    console.log({test3: test3})*/
+    console.log('Render Main')
 
     let {notesData, counterData} = stateObject
     return <div>
         <NotesTester notesStateObject={notesData}/>
         <CountTester counterStateObject={counterData}/>
-        <button onClick={() => stateObject.test++}>{stateObject.test}</button>
+        {/*<button onClick={() => stateObject.test++}>{stateObject.test}</button>}*/}
     </div>
 }
 
