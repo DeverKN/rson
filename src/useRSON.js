@@ -9,12 +9,12 @@ const objectWatcher = (path, interceptGet, interceptSet, terminal = true, bindMe
 	return {
 		get: (obj, prop, reciever) => {
             const updatedPath = [...path, prop]
-            let result = null
+            let result = interceptSet(path, obj, prop)
             if (isObject(result, true)) {
-                //if (path.length > 0) {
+                /*if (path.length > 0) {
                     //Not the end of the path
                     return new Proxy(result, objectWatcher(updatedPath, interceptGet, interceptSet, bindMethods, autoRef));
-                /*} else {
+                } else {
                     //The end of the path
                     //return a *magic* object
                     const magicInterceptSet = (path, obj, prop, value) => {
@@ -114,15 +114,17 @@ const useRSON = (data, optimisticEvaluation = false) => {
     //version is more up to date than the stateful version
 
     const interceptGet = (path, obj, prop) => {
+        const computedPath = (prop === '$') ? path.slice(0, -1) : path
         if (optimisticEvaluation) {
-            return getNestedValue(localState, path)
+            return getNestedValue(localState, computedPath)
         } else {
-            return getNestedValue(immutableReactState, path)
+            return getNestedValue(immutableReactState, computedPath)
         }
     }
 
     const interceptSet = (path, obj, prop, value) => {
-        localState = updateImmutableObject(localState, path, value)
+        const computedPath = (prop === '$') ? path.slice(0, -1) : path
+        localState = updateImmutableObject(computedPath, path, value)
         setImmutableReactState(localState)
         return true
     }
