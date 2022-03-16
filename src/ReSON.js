@@ -14,6 +14,18 @@ const computePath = (path, prop, terminal) => {
     }
 }
 
+const basicObjectWatcherProxy = (path, getInterceptor, setInterceptor) => {
+    return {
+        get: (obj, prop, reciever) => {
+            let result = getInterceptor([...path, prop], obj, prop, reciever)
+            return isObject(result) ? new Proxy({}, basicObjectWatcherProxy([...path, prop], getInterceptor, setInterceptor)) : result
+        },
+        set: (obj, prop, value, reciever) => {
+            return setInterceptor([...path, prop], obj, prop, value, reciever)
+        }
+    }
+}
+
 const objectWatcherProxy = (path, getInterceptor, setInterceptor, terminal = () => false, unwrapPreviousCallback = () => {}) => {
     return {
         get: (obj, prop, reciever) => {
@@ -61,7 +73,41 @@ const objectWatcherProxy = (path, getInterceptor, setInterceptor, terminal = () 
     }
 }
 
-const useRESON = (jsonData, optimisticEvaluation = false) => {
+const useReSON = (jsonData, optimisticEvaluation = false) => {
+    const [immutableReactState, setImmutableReactState] = useState(jsonData)
+
+    //setState() (or in this case setImmutableReactState()) is an async fuction
+    //So if you do something like:
+    //state = 0
+    //setState(1)
+    //setState(state + 1)
+    //You will get a resulting state of 1 rather than 2
+    //To get around this we use a local copy of the state that is updated before each
+    //call to setState, this means we always have an up to date version of the state
+    //to base future updates on
+    let localState = immutableReactState
+    //Additionally, if you use the 'optimisticEvaluation' flag then you can access these values rather than
+    //the actual state, in general the two should be the same however there may be some cases where the local
+    //version is more up to date than the stateful version
+
+    const interceptGet = (path, obj, prop) => {
+        if (optimisticEvaluation) {
+            return getNestedValue(localState, path)
+        } else {
+            return getNestedValue(immutableReactState, path)
+        }
+    }
+
+    const interceptSet = (path, obj, prop, value) => {
+        localState = updateImmutableObject(localState, path, value)
+        setImmutableReactState(localState)
+        return true
+    }
+
+    return new Proxy ({}, basicObjectWatcherProxy([], interceptGet, interceptSet, () => false))
+}
+
+const useReSONX = (jsonData, optimisticEvaluation = false) => {
     const [immutableReactState, setImmutableReactState] = useState(jsonData)
 
     //setState() (or in this case setImmutableReactState()) is an async fuction
@@ -95,4 +141,4 @@ const useRESON = (jsonData, optimisticEvaluation = false) => {
     return new Proxy ({}, objectWatcherProxy([], interceptGet, interceptSet, () => false))
 }
 
-export { useRESON, symbolForTerminal }
+export { useReSON, symbolForTerminal }

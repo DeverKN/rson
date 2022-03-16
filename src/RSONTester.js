@@ -1,10 +1,10 @@
-import { useRESON, symbolForTerminal } from "./useRESON";
+import { useReSON, symbolForTerminal } from "./ReSON";
 import CountTester from "./CountTester";
 import NotesTester from "./NotesTester";
 
 const RSONTester = () => {
 
-    let stateObject = useRESON({notesData: {notes: [1,2,3,4,5,6,7,8,9]}, 
+    let stateObject = useReSON({notesData: {notes: [1,2,3,4,5,6,7,8,9]}, 
                             counterData: {counter: {
                                 count: 0,
                                 increment: function() {
